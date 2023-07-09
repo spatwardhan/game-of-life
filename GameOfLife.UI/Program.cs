@@ -14,9 +14,13 @@ namespace GameOfLife.UI
 
         static void Main(string[] args)
         {            
-            Console.WriteLine(MainPrompt);
-            var choice = Console.ReadLine();            
+            ProcessChoice();
+        }
 
+        private static void ProcessChoice()
+        {
+            Console.WriteLine(MainPrompt);
+            var choice = Console.ReadLine();
             switch(choice)
             {
                 case "1": SetGrid();
@@ -40,6 +44,7 @@ namespace GameOfLife.UI
                 var width = int.Parse(match.Groups[1].Value);
                 var height = int.Parse(match.Groups[2].Value);
                 grid = new Grid(width,height);
+                ProcessChoice();
             }
             catch(ArgumentException aex)
             {
