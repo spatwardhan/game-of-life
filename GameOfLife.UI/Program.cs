@@ -86,6 +86,44 @@ namespace GameOfLife.UI
 
         private static void InitializeGrid()
         {
+            var regex = new Regex(DimensionsFormat);
+            var liveCells = new List<Cell>();
+            Grid.ResetGrid();
+            Console.WriteLine("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:");
+
+            var command = "";
+            while((command = Console.ReadLine()) != "#")
+            {
+                if(command == "~")
+                {
+                    InitializeGrid();
+                }
+                else if(regex.IsMatch(command))
+                {
+                    try
+                    {
+                        var match = regex.Match(command);
+                        var x = int.Parse(match.Groups[1].Value);
+                        var y = int.Parse(match.Groups[2].Value);
+                        liveCells.Add(new Cell(x,y));
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        InitializeGrid();
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if(command == "#")
+            {
+                Grid.UpdateGrid(liveCells);
+                Grid.ShowGrid();
+                ProcessChoice();
+            }
 
         }
     }

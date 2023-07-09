@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GameOfLife.Core
 {
@@ -6,6 +8,7 @@ namespace GameOfLife.Core
     {
         public int Width {get;set;}
         public int Height {get;set;}
+        private List<Cell> LiveCells;
 
         public Grid(int width, int height)
         {
@@ -14,6 +17,32 @@ namespace GameOfLife.Core
 
             this.Width = width;
             this.Height = height;
+            this.LiveCells = new List<Cell>();
+        }
+
+        public void ResetGrid()
+        {
+            this.LiveCells.Clear();
+        }
+
+        public void UpdateGrid(List<Cell> liveCells)
+        {
+            this.LiveCells = liveCells;
+        }
+
+        public void ShowGrid()
+        {
+            for(int i=0;i<this.Width;i++)
+            {
+                for(int j=0;j<this.Height;j++)
+                {
+                    if(this.LiveCells.Any(cell => cell.X == i && cell.Y == j))
+                        Console.Write("o ");
+                    else
+                        Console.Write(". ");
+                }
+                Console.WriteLine();
+            }
         }
     }
 }
