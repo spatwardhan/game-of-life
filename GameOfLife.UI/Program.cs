@@ -10,7 +10,10 @@ namespace GameOfLife.UI
     {
         static readonly string MainPrompt = $"Welcome to Conway's Game of Life{Environment.NewLine}[1] Specify grid size{Environment.NewLine}[2] Specify number of generation{Environment.NewLine}[3] Specify initial live cells{Environment.NewLine}[4] Run{Environment.NewLine}Please enter your selection";
         static readonly string DimensionsFormat = @"(\d{1,2})\s(\d{1,2})";
-        static Grid grid = default;
+        static Grid Grid = default;
+        static int Generations = default;
+        const int MinGenerations = 3;
+        const int MaxGenerations = 20;
 
         static void Main(string[] args)
         {            
@@ -29,7 +32,7 @@ namespace GameOfLife.UI
                 break;
                 case "3": InitializeGrid();
                 break;
-                default: break;
+                default: return;
             }
         }
 
@@ -43,7 +46,7 @@ namespace GameOfLife.UI
                 var match = regex.Match(dimensions);
                 var width = int.Parse(match.Groups[1].Value);
                 var height = int.Parse(match.Groups[2].Value);
-                grid = new Grid(width,height);
+                Grid = new Grid(width,height);
                 ProcessChoice();
             }
             catch(ArgumentException aex)
@@ -60,7 +63,25 @@ namespace GameOfLife.UI
 
         private static void SetGenerations()
         {
+            Console.WriteLine("Please enter the number of generation (10-20):");
+            var gen = Console.ReadLine();
+            var generations = 0;
+            var isValid = int.TryParse(gen, out generations);
+            if(!isValid)
+            {
+                Console.WriteLine("Please enter valid input!");
+                SetGenerations();
+            }
+                
+            else if(isValid && (generations < MinGenerations || generations > MaxGenerations))
+            {
+                Console.WriteLine("Number of generations must be between 3 and 20!");
+                SetGenerations();
+            }               
 
+            Generations = generations;
+
+            ProcessChoice();
         }
 
         private static void InitializeGrid()
