@@ -14,6 +14,7 @@ namespace GameOfLife.UI
         static int Generations = default;
         const int MinGenerations = 3;
         const int MaxGenerations = 20;
+        static int CurrentGeneration = 0;
 
         static void Main(string[] args)
         {            
@@ -31,6 +32,8 @@ namespace GameOfLife.UI
                 case "2": SetGenerations();
                 break;
                 case "3": InitializeGrid();
+                break;
+                case "4": Run();
                 break;
                 default: return;
             }
@@ -121,10 +124,39 @@ namespace GameOfLife.UI
             if(command == "#")
             {
                 Grid.UpdateGrid(liveCells);
-                Grid.ShowGrid();
                 ProcessChoice();
             }
 
+        }
+
+        private static void Run()
+        {            
+            if(CurrentGeneration == 0)
+                Console.WriteLine("Initial position");
+            else
+                Console.WriteLine($"Generation {CurrentGeneration}");
+            Grid.ShowGrid();
+            if(CurrentGeneration >= Generations)
+            {
+                Console.WriteLine("End of generation. Press any key to return to main menu");
+                Console.Read();
+                ProcessChoice();
+            }
+            else
+            {
+                Console.WriteLine("Enter > to go to next generation or # to go back to main menu");
+                var command = Console.ReadLine();
+                if(command == ">")
+                {
+                    //Grid recomputation happens here
+                    ++CurrentGeneration;
+                    Run();
+                }
+                else
+                {
+                    ProcessChoice();
+                }
+            }
         }
     }
 }
