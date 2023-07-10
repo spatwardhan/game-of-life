@@ -8,7 +8,7 @@ namespace GameOfLife.Core
     {
         public int Width {get;set;}
         public int Height {get;set;}
-        private List<Cell> LiveCells;
+        private bool[,] _cells;
 
         public Grid(int width, int height)
         {
@@ -17,32 +17,43 @@ namespace GameOfLife.Core
 
             this.Width = width;
             this.Height = height;
-            this.LiveCells = new List<Cell>();
+            _cells = new bool[width,height];
         }
 
         public void ResetGrid()
         {
-            this.LiveCells.Clear();
+            for (int i=0;i<this.Height;i++) 
+            {
+                for(int j=0;j<this.Width;j++)
+                {
+                    _cells[i,j] = false;
+                }
+            }
         }
 
         public void UpdateGrid(List<Cell> liveCells)
         {
-            this.LiveCells = liveCells;
+            foreach(var cell in liveCells)
+            {
+                _cells[cell.X,cell.Y] = true;
+            }
         }
 
         public void ShowGrid()
         {
-            for(int i=0;i<this.Width;i++)
+            for(int i=0;i<this.Height;i++)
             {
                 for(int j=0;j<this.Height;j++)
                 {
-                    if(this.LiveCells.Any(cell => cell.X == i && cell.Y == j))
-                        Console.Write("o ");
-                    else
-                        Console.Write(". ");
+                    Console.Write(_cells[i,j] ? "o " : ". ");
                 }
                 Console.WriteLine();
             }
+        }
+
+        public bool[,] GetCells()
+        {
+            return _cells;
         }
     }
 }

@@ -139,7 +139,7 @@ namespace GameOfLife.UI
             if(CurrentGeneration >= Generations)
             {
                 Console.WriteLine("End of generation. Press any key to return to main menu");
-                Console.Read();
+                Console.ReadLine();
                 ProcessChoice();
             }
             else
