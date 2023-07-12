@@ -17,7 +17,7 @@ namespace GameOfLife.Core
 
             this.Width = width;
             this.Height = height;
-            _cells = new bool[width,height];
+            _cells = new bool[height,width];
         }
 
         public void ResetGrid()
@@ -35,6 +35,7 @@ namespace GameOfLife.Core
         {
             foreach(var cell in liveCells)
             {
+                Console.WriteLine($"{cell.X},{cell.Y}");
                 _cells[cell.X,cell.Y] = true;
             }
         }
@@ -43,7 +44,7 @@ namespace GameOfLife.Core
         {
             for(int i=0;i<this.Height;i++)
             {
-                for(int j=0;j<this.Height;j++)
+                for(int j=0;j<this.Width;j++)
                 {
                     Console.Write(_cells[i,j] ? "o " : ". ");
                 }

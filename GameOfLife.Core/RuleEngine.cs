@@ -20,8 +20,10 @@ namespace GameOfLife.Core
             var liveNeighbourCount = GetNeighbours(x,y).Where(isLive => isLive).Count();
             if(cells[x,y])
             {
-                if(liveNeighbourCount < 2)
-                    return (cell,false);                
+                if (liveNeighbourCount < 2)
+                    return (cell, false);
+                else if (liveNeighbourCount > 3)
+                    return (cell, false);           
             }
             return (cell,true);
         }
@@ -43,7 +45,7 @@ namespace GameOfLife.Core
             };
 
             return neighbours
-            .Where(cell => cell.X >= 0 && cell.X <= h-1 && cell.Y >= 0 && cell.Y <= w-1)
+            .Where(cell => cell.X >= 0 && cell.X < h && cell.Y >= 0 && cell.Y < w)
             .Select(cell=>cells[cell.X,cell.Y]);
         }
     }
