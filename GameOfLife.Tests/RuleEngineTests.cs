@@ -71,5 +71,31 @@ namespace GameOfLife.Tests
 
             Assert.False(status);
         }
+
+        [Fact]
+        public void DeadCellWithExactlyThreeLiveNeighboursShouldBecomeAlive()
+        {     
+            var grid = new Grid(2,3);                   
+            var liveCells = new List<Cell>{new Cell(0,0),new Cell(0,1),new Cell(1,0)};
+            grid.UpdateGrid(liveCells);
+            var cell = new Cell(1,1);
+            var engine = new RuleEngine(grid);
+            var (_,status) = engine.MoveToNextGeneration(cell);
+
+            Assert.True(status);
+        }
+
+        [Fact]
+        public void DeadCellWithLessThanThreeLiveNeighboursShouldRemainDead()
+        {     
+            var grid = new Grid(2,3);                   
+            var liveCells = new List<Cell>{new Cell(0,0),new Cell(0,1)};
+            grid.UpdateGrid(liveCells);
+            var cell = new Cell(1,1);
+            var engine = new RuleEngine(grid);
+            var (_,status) = engine.MoveToNextGeneration(cell);
+
+            Assert.False(status);
+        }
     }
 }

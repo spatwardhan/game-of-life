@@ -16,16 +16,18 @@ namespace GameOfLife.Core
         public (Cell,bool) MoveToNextGeneration(Cell cell)
         {
             var cells = _grid.GetCells();
+            var newStatus = false;
             var (x,y) = (cell.X,cell.Y);
             var liveNeighbourCount = GetNeighbours(x,y).Where(isLive => isLive).Count();
-            if(cells[x,y])
+            if(cells[x,y] && ((liveNeighbourCount == 2) || (liveNeighbourCount == 3)))
             {
-                if (liveNeighbourCount < 2)
-                    return (cell, false);
-                else if (liveNeighbourCount > 3)
-                    return (cell, false);           
+                newStatus = true;        
             }
-            return (cell,true);
+            if(!cells[x,y] && liveNeighbourCount == 3)
+            {
+                newStatus = true;
+            }
+            return (cell, newStatus);
         }
 
         private IEnumerable<bool> GetNeighbours(int x,int y)
