@@ -1,39 +1,56 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Schema;
 
 namespace GameOfLife.Core
 {
     public class RuleEngine
     {
         private Grid _grid;
+        private Dictionary<Scenario, ICellUpdateStrategy> _updateStrategies;
 
         public RuleEngine(Grid grid)
         {
             _grid = grid;
+            _updateStrategies = new Dictionary<Scenario, ICellUpdateStrategy>
+            {
+                { Scenario.UNDERPOPULATION, new UnderpopulationStrategy() },
+                { Scenario.OVERPOPULATION, new OverpopulationStrategy()},
+                { Scenario.REPRODUCTION, new ReproductionStrategy()},
+                { Scenario.DEFAULT, new DefaultStrategy()}
+};
         }
 
-        public (Cell,bool) MoveToNextGeneration(Cell cell)
+        public void MoveToNextGeneration()
         {
-            var cells = _grid.GetCells();
-            var newStatus = false;
-            var (x,y) = (cell.X,cell.Y);
-            var liveNeighbourCount = GetNeighbours(x,y).Where(isLive => isLive).Count();
-            if(cells[x,y] && ((liveNeighbourCount == 2) || (liveNeighbourCount == 3)))
+            var cells = _grid.Cells;
+            var updatedCells = new Dictionary<Cell, bool>();
+            var scenario = Scenario.DEFAULT;
+            ICellUpdateStrategy strategy;
+
+            foreach (var cell in cells.Keys)
             {
-                newStatus = true;        
+                var newCell = new Cell(cell);
+                var liveNeighbourCount = GetLiveNeighbourCount(cell);
+                if (cells[cell] && (liveNeighbourCount < 2))
+                    scenario = Scenario.UNDERPOPULATION;
+                else if (cells[cell] && (liveNeighbourCount > 3))
+                    scenario = Scenario.OVERPOPULATION;
+                else if ((!cells[cell]) && (liveNeighbourCount == 3))
+                    scenario = Scenario.REPRODUCTION;
+
+                strategy = _updateStrategies[scenario];
+                var newState = strategy.UpdateCellState(cells[cell]);
+
+                updatedCells.Add(newCell, newState);
             }
-            if(!cells[x,y] && liveNeighbourCount == 3)
-            {
-                newStatus = true;
-            }
-            return (cell, newStatus);
+            _grid.Cells = updatedCells;
         }
 
-        private IEnumerable<bool> GetNeighbours(int x,int y)
+        private int GetLiveNeighbourCount(Cell cell)
         {
-            var (w,h) = (_grid.Width, _grid.Height);
-            var cells = _grid.GetCells();
+            var (x, y) = (cell.X, cell.Y);
             var neighbours = new List<Cell>
             {
                 new Cell(x-1,y-1),
@@ -46,9 +63,15 @@ namespace GameOfLife.Core
                 new Cell(x+1,y+1)
             };
 
-            return neighbours
-            .Where(cell => cell.X >= 0 && cell.X < h && cell.Y >= 0 && cell.Y < w)
-            .Select(cell=>cells[cell.X,cell.Y]);
+            int liveCount = 0;
+
+            foreach (var neighbour in neighbours)
+            {
+                if (_grid.Cells.TryGetValue(neighbour, out var isLive) && isLive)
+                    ++liveCount;
+            }
+
+            return liveCount;
         }
     }
 }

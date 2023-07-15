@@ -15,6 +15,7 @@ namespace GameOfLife.UI
         const int MinGenerations = 3;
         const int MaxGenerations = 20;
         static int CurrentGeneration = 0;
+        static RuleEngine RuleEngine;
 
         static void Main(string[] args)
         {            
@@ -148,7 +149,8 @@ namespace GameOfLife.UI
                 var command = Console.ReadLine();
                 if(command == ">")
                 {
-                    //Grid recomputation happens here
+                    RuleEngine = new RuleEngine(Grid);
+                    RuleEngine.MoveToNextGeneration();
                     ++CurrentGeneration;
                     Run();
                 }
