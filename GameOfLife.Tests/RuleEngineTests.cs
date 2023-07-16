@@ -43,7 +43,9 @@ namespace GameOfLife.Tests
         {
             var grid = new Grid(3, 3);
             var liveCells = new List<Cell> { new Cell(1, 0), new Cell(1, 1), new Cell(2, 0) };
-            grid.UpdateGrid(liveCells);            
+            var gridOps = new GridOperations(grid);
+            gridOps.InitializeGrid();
+            gridOps.UpdateGrid(liveCells);            
             RuleEngine.MoveToNextGeneration(grid);
 
             Assert.NotNull(grid.Cells);
@@ -61,7 +63,10 @@ namespace GameOfLife.Tests
         {
             var grid = new Grid(5, 5);
             var liveCells = new List<Cell> { new Cell(1, 2), new Cell(1, 3), new Cell(1, 4), new Cell(2, 2), new Cell(2, 3), new Cell(2, 4), new Cell(3, 1), new Cell(3, 4) };
-            grid.UpdateGrid(liveCells);
+            var gridOps = new GridOperations(grid);
+            gridOps.InitializeGrid();
+            gridOps.UpdateGrid(liveCells);
+
             for (int i = 0; i < 3; i++)
             {
                 RuleEngine.MoveToNextGeneration(grid);

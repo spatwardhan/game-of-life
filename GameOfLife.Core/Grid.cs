@@ -19,42 +19,6 @@ namespace GameOfLife.Core
 
             this.Width = width;
             this.Height = height;
-            ResetGrid();
-        }
-        public void ResetGrid()
-        {
-            if (Cells.Any())
-                Cells.Clear();
-
-            for (int i=0;i<this.Height;i++) 
-            {
-                for(int j=0;j<this.Width;j++)
-                {
-                    var cell = new Cell(i, j);
-                    Cells.Add(cell,false);
-                }
-            }            
-        }
-
-        public void UpdateGrid(List<Cell> liveCells)
-        {
-            foreach(var liveCell in liveCells)
-            {
-                Cells[liveCell] = true;
-            }
-        }
-
-        public void ShowGrid()
-        {
-            for(int i=0;i<this.Height;i++)
-            {
-                for(int j=0;j<this.Width;j++)
-                {
-                    var cell = new Cell(i,j);
-                    Console.Write(Cells[cell]  ? "o " : ". ");
-                }
-                Console.WriteLine();
-            }
-        }
+        }        
     }
 }

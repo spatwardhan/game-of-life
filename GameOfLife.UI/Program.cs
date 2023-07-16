@@ -10,14 +10,17 @@ namespace GameOfLife.UI
     {
         static readonly string MainPrompt = $"Welcome to Conway's Game of Life{Environment.NewLine}[1] Specify grid size{Environment.NewLine}[2] Specify number of generation{Environment.NewLine}[3] Specify initial live cells{Environment.NewLine}[4] Run{Environment.NewLine}Please enter your selection";
         static readonly string DimensionsFormat = @"(\d{1,2})\s(\d{1,2})";
-        static Grid Grid = default;
+        static Grid Grid;
         static int Generations = default;
         const int MinGenerations = 3;
         const int MaxGenerations = 20;
         static int CurrentGeneration = 0;
+        static GridOperations GridOps;
 
         static void Main(string[] args)
-        {            
+        {
+            Grid = new Grid(25, 25); //initialise with largest acceptable dimensions
+            GridOps = new GridOperations(Grid);
             ProcessChoice();
         }
 
@@ -47,9 +50,9 @@ namespace GameOfLife.UI
             try
             {                
                 var match = regex.Match(dimensions);
-                var width = int.Parse(match.Groups[1].Value);
-                var height = int.Parse(match.Groups[2].Value);
-                Grid = new Grid(width,height);
+                Grid.Width = int.Parse(match.Groups[1].Value);
+                Grid.Height = int.Parse(match.Groups[2].Value);                
+                GridOps.InitializeGrid();
                 ProcessChoice();
             }
             catch(ArgumentException aex)
@@ -90,7 +93,7 @@ namespace GameOfLife.UI
         {
             var regex = new Regex(DimensionsFormat);
             var liveCells = new List<Cell>();
-            Grid.ResetGrid();
+            GridOps.ResetGrid();
             Console.WriteLine("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:");
 
             var command = "";
@@ -122,7 +125,7 @@ namespace GameOfLife.UI
             }
             if(command == "#")
             {
-                Grid.UpdateGrid(liveCells);
+                GridOps.UpdateGrid(liveCells);
                 ProcessChoice();
             }
         }
@@ -133,7 +136,7 @@ namespace GameOfLife.UI
                 Console.WriteLine("Initial position");
             else
                 Console.WriteLine($"Generation {CurrentGeneration}");
-            Grid.ShowGrid();
+            GridOps.ShowGrid();
             if(CurrentGeneration >= Generations)
             {
                 Console.WriteLine("End of generation. Press any key to return to main menu");
