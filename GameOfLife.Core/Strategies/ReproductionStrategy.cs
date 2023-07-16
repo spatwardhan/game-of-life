@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameOfLife.Core
+namespace GameOfLife.Core.Strategies
 {
-    public class UnderpopulationStrategy : ICellUpdateStrategy
+    public class ReproductionStrategy : ICellUpdateStrategy
     {
         public bool UpdateCellState(bool currentState)
         {
-            return false;
+            return true;
         }
     }
 }

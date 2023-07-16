@@ -1,8 +1,9 @@
-    using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Schema;
+using GameOfLife.Core.Strategies;
 
 namespace GameOfLife.Core
 {

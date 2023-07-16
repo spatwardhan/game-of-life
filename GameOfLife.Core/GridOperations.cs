@@ -4,50 +4,43 @@ using System.Linq;
 
 namespace GameOfLife.Core
 {
-    public class GridOperations
+    public static class GridOperations
     {
-        private Grid _grid;
-
-        public GridOperations(Grid grid)
+        public static void ResetGrid(Grid grid)
         {
-            _grid = grid;
+            if (grid.Cells.Any())
+                grid.Cells.Clear();
+            InitializeGrid(grid);
         }
 
-        public void ResetGrid()
+        public static void InitializeGrid(Grid grid)
         {
-            if (_grid.Cells.Any())
-                _grid.Cells.Clear();
-            InitializeGrid();
-        }
-
-        public void InitializeGrid()
-        {
-            for (int i = 0; i < _grid.Height; i++)
+            for (int i = 0; i < grid.Height; i++)
             {
-                for (int j = 0; j < _grid.Width; j++)
+                for (int j = 0; j < grid.Width; j++)
                 {
                     var cell = new Cell(i, j);
-                    _grid.Cells.Add(cell, false);
+                    grid.Cells.Add(cell, false);
                 }
             }
         }
 
-        public void UpdateGrid(List<Cell> liveCells)
+        public static void UpdateGrid(Grid grid, List<Cell> liveCells)
         {
             foreach (var liveCell in liveCells)
             {
-                _grid.Cells[liveCell] = true;
+                grid.Cells[liveCell] = true;
             }
         }
 
-        public void ShowGrid()
+        public static void ShowGrid(Grid grid)
         {
-            for (int i = 0; i < _grid.Height; i++)
+            for (int i = 0; i < grid.Height; i++)
             {
-                for (int j = 0; j < _grid.Width; j++)
+                for (int j = 0; j < grid.Width; j++)
                 {
                     var cell = new Cell(i, j);
-                    Console.Write(_grid.Cells[cell] ? "o " : ". ");
+                    Console.Write(grid.Cells[cell] ? "o " : ". ");
                 }
                 Console.WriteLine();
             }
