@@ -9,7 +9,7 @@ namespace GameOfLife.UI
     public class Program
     {
         static readonly string MainPrompt = $"Welcome to Conway's Game of Life{Environment.NewLine}[1] Specify grid size{Environment.NewLine}[2] Specify number of generation{Environment.NewLine}[3] Specify initial live cells{Environment.NewLine}[4] Run{Environment.NewLine}Please enter your selection";
-        static readonly string DimensionsFormat = @"(\d{1,2})\s(\d{1,2})";
+        static readonly Regex DimensionsFormat = new Regex(@"(\d{1,2})\s(\d{1,2})");
         static Grid Grid;
         static int Generations = default;
         const int MinGenerations = 3;
@@ -27,137 +27,199 @@ namespace GameOfLife.UI
         private static void ProcessChoice()
         {
             Console.WriteLine(MainPrompt);
-            var choice = Console.ReadLine();
-            switch(choice)
+            do
             {
-                case "1": SetGrid();
-                break;
-                case "2": SetGenerations();
-                break;
-                case "3": InitializeGrid();
-                break;
-                case "4": Run();
-                break;
-                default: return;
-            }
+                var choice = Console.ReadLine();
+                if (choice == "1")
+                {
+                    SetGrid();
+                    break;
+                }
+                else if (choice == "2")
+                {
+                    SetGenerations();
+                    break;
+                }
+                else if (choice == "3")
+                {
+                    PopulateGrid();
+                    break;
+                }
+                else if (choice == "4")
+                {
+                    Run();
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid option selected, program will exit!");
+                    return;
+                }
+            } while (true);
+
         }
 
         private static void SetGrid()
-        {                
-            var regex = new Regex(DimensionsFormat);
-            Console.WriteLine("Please enter grid size in w h format (example: 10 15):");
-            var dimensions = Console.ReadLine();
-            try
-            {                
-                var match = regex.Match(dimensions);
-                Grid.Width = int.Parse(match.Groups[1].Value);
-                Grid.Height = int.Parse(match.Groups[2].Value);                
-                GridOps.InitializeGrid();
-                ProcessChoice();
-            }
-            catch(ArgumentException aex)
-            {
-                Console.WriteLine(aex.Message);
-                SetGrid();
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                SetGrid();
-            }
-        }
-
-        private static void SetGenerations()
         {
-            Console.WriteLine("Please enter the number of generation (10-20):");
-            var gen = Console.ReadLine();
-            var isValid = int.TryParse(gen, out int generations);
-            if (!isValid)
+            do
             {
-                Console.WriteLine("Please enter valid input!");
-                SetGenerations();
-            }
-                
-            else if(isValid && (generations < MinGenerations || generations > MaxGenerations))
-            {
-                Console.WriteLine("Number of generations must be between 3 and 20!");
-                SetGenerations();
-            }               
+                Console.WriteLine("Please enter grid size in w h format (example: 10 15):");
+                var dimensions = Console.ReadLine();
+                var isValid = true;
+                try
+                {
+                    var match = DimensionsFormat.Match(dimensions);
+                    var width = int.Parse(match.Groups[1].Value);
+                    var height = int.Parse(match.Groups[2].Value);
 
-            Generations = generations;
+                    if (width <= 0 || width > 25 || height <= 0 || height > 25)
+                    {
+                        Console.WriteLine("Dimensions must be between 1 to 25 inclusive!");
+                        isValid = false;
+                    }
+                    else
+                    {
+                        Grid.Width = width;
+                        Grid.Height = height;
+                        GridOps.InitializeGrid();
+                    }
+
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    isValid = false;
+                }
+
+                if (isValid)
+                    break;
+
+
+            } while (true);
 
             ProcessChoice();
         }
 
-        private static void InitializeGrid()
+        private static void SetGenerations()
         {
-            var regex = new Regex(DimensionsFormat);
+            do
+            {
+                Console.WriteLine("Please enter the number of generation (10-20):");
+                var gen = Console.ReadLine();
+                var isValid = int.TryParse(gen, out int generations);
+
+                if (!isValid)
+                {
+                    Console.WriteLine("Please enter valid input!");
+                }
+                else if (isValid && (generations < MinGenerations || generations > MaxGenerations))
+                {
+                    Console.WriteLine("Number of generations must be between 3 and 20!");
+                }
+                else
+                {
+                    Generations = generations;
+                    break;
+                }
+
+            } while (true);
+
+            ProcessChoice();
+        }
+
+        private static void PopulateGrid()
+        {
             var liveCells = new List<Cell>();
-            GridOps.ResetGrid();
             Console.WriteLine("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:");
 
-            var command = "";
-            while((command = Console.ReadLine()) != "#")
+            do
             {
-                if(command == "~")
+                string command = Console.ReadLine();
+
+                if (command == "~")
                 {
-                    InitializeGrid();
+                    GridOps.ResetGrid();
+                    Console.WriteLine("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:");
                 }
-                else if(regex.IsMatch(command))
+                else if (DimensionsFormat.IsMatch(command))
                 {
                     try
                     {
-                        var match = regex.Match(command);
+                        var match = DimensionsFormat.Match(command);
                         var x = int.Parse(match.Groups[1].Value);
                         var y = int.Parse(match.Groups[2].Value);
-                        liveCells.Add(new Cell(x,y));
+
+                        if (x < 0 || x >= Grid.Height || y < 0 || y >= Grid.Width)
+                        {
+                            Console.WriteLine("Position must be within the grid dimensions!");
+                        }
+                        else
+                        {
+                            liveCells.Add(new Cell(x, y));
+                        }
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
-                        InitializeGrid();
                     }
                 }
-                else
+                else if (command == "#")
                 {
                     break;
                 }
-            }
-            if(command == "#")
-            {
-                GridOps.UpdateGrid(liveCells);
-                ProcessChoice();
-            }
+                else
+                {
+                    Console.WriteLine("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:");
+                    continue;
+                }
+
+            } while (true);
+
+            GridOps.UpdateGrid(liveCells);
+            ProcessChoice();
         }
 
         private static void Run()
-        {            
-            if(CurrentGeneration == 0)
-                Console.WriteLine("Initial position");
-            else
-                Console.WriteLine($"Generation {CurrentGeneration}");
-            GridOps.ShowGrid();
-            if(CurrentGeneration >= Generations)
+        {
+            do
             {
-                Console.WriteLine("End of generation. Press any key to return to main menu");
-                Console.ReadLine();
-                ProcessChoice();
-            }
-            else
-            {
-                Console.WriteLine("Enter > to go to next generation or # to go back to main menu");
-                var command = Console.ReadLine();
-                if(command == ">")
-                {                    
-                    RuleEngine.MoveToNextGeneration(Grid);
-                    ++CurrentGeneration;
-                    Run();
+                if (CurrentGeneration == 0)
+                    Console.WriteLine("Initial position");
+                else
+                    Console.WriteLine($"Generation {CurrentGeneration}");
+
+                GridOps.ShowGrid();
+
+                if (CurrentGeneration >= Generations)
+                {
+                    Console.WriteLine("End of generation. Press any key to return to main menu");
+                    Console.ReadLine();
+                    break;
                 }
                 else
                 {
-                    ProcessChoice();
+                    Console.WriteLine("Enter > to go to next generation or # to go back to main menu");
+                    var command = Console.ReadLine();
+                    if (command == ">")
+                    {
+                        RuleEngine.MoveToNextGeneration(Grid);
+                        ++CurrentGeneration;                        
+                    }
+                    else if(command =="#")
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input entered!");
+                    }
                 }
-            }
+
+            } while (true);
+
+            ProcessChoice();
+
         }
     }
 }
