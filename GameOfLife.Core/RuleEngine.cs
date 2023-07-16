@@ -1,4 +1,4 @@
-using System;
+    using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,22 +6,17 @@ using System.Xml.Schema;
 
 namespace GameOfLife.Core
 {
-    public class RuleEngine
+    public static class RuleEngine
     {
-        private readonly Dictionary<Scenario, ICellUpdateStrategy> _updateStrategies;
+        private static readonly Dictionary<Scenario, ICellUpdateStrategy> UpdateStrategies = new Dictionary<Scenario, ICellUpdateStrategy>
+        {
+            { Scenario.UNDERPOPULATION, new UnderpopulationStrategy() },
+            { Scenario.OVERPOPULATION, new OverpopulationStrategy()},
+            { Scenario.REPRODUCTION, new ReproductionStrategy()},
+            { Scenario.DEFAULT, new DefaultStrategy()}
+        };
 
-        public RuleEngine()
-        {            
-            _updateStrategies = new Dictionary<Scenario, ICellUpdateStrategy>
-            {
-                { Scenario.UNDERPOPULATION, new UnderpopulationStrategy() },
-                { Scenario.OVERPOPULATION, new OverpopulationStrategy()},
-                { Scenario.REPRODUCTION, new ReproductionStrategy()},
-                { Scenario.DEFAULT, new DefaultStrategy()}
-};
-        }
-
-        public void MoveToNextGeneration(Grid grid)
+        public static void MoveToNextGeneration(Grid grid)
         {
             var cells = grid.Cells;
             var updatedCells = new Dictionary<Cell, bool>();
@@ -31,10 +26,10 @@ namespace GameOfLife.Core
             foreach (var cell in cells.Keys)
             {
                 var newCell = new Cell(cell);
-                var liveNeighbourCount = GetLiveNeighbourCount(grid, cell);                
+                var liveNeighbourCount = GetLiveNeighbourCount(grid, cell);
                 scenario = GetScenarioForTransition(cells[cell], liveNeighbourCount);
 
-                strategy = _updateStrategies[scenario];
+                strategy = UpdateStrategies[scenario];
                 var newState = strategy.UpdateCellState(cells[cell]);
 
                 updatedCells.Add(newCell, newState);
@@ -53,7 +48,7 @@ namespace GameOfLife.Core
             return Scenario.DEFAULT;
         }
 
-        private int GetLiveNeighbourCount(Grid grid, Cell cell)
+        private static int GetLiveNeighbourCount(Grid grid, Cell cell)
         {
             var (x, y) = (cell.X, cell.Y);
             var neighbours = new List<Cell>

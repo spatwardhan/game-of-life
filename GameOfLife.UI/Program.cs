@@ -15,7 +15,6 @@ namespace GameOfLife.UI
         const int MinGenerations = 3;
         const int MaxGenerations = 20;
         static int CurrentGeneration = 0;
-        static RuleEngine RuleEngine;
 
         static void Main(string[] args)
         {            
@@ -69,9 +68,8 @@ namespace GameOfLife.UI
         {
             Console.WriteLine("Please enter the number of generation (10-20):");
             var gen = Console.ReadLine();
-            var generations = 0;
-            var isValid = int.TryParse(gen, out generations);
-            if(!isValid)
+            var isValid = int.TryParse(gen, out int generations);
+            if (!isValid)
             {
                 Console.WriteLine("Please enter valid input!");
                 SetGenerations();
@@ -127,7 +125,6 @@ namespace GameOfLife.UI
                 Grid.UpdateGrid(liveCells);
                 ProcessChoice();
             }
-
         }
 
         private static void Run()
@@ -148,8 +145,7 @@ namespace GameOfLife.UI
                 Console.WriteLine("Enter > to go to next generation or # to go back to main menu");
                 var command = Console.ReadLine();
                 if(command == ">")
-                {
-                    RuleEngine = new RuleEngine();
+                {                    
                     RuleEngine.MoveToNextGeneration(Grid);
                     ++CurrentGeneration;
                     Run();
