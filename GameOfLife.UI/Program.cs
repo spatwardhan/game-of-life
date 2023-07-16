@@ -149,8 +149,8 @@ namespace GameOfLife.UI
                 var command = Console.ReadLine();
                 if(command == ">")
                 {
-                    RuleEngine = new RuleEngine(Grid);
-                    RuleEngine.MoveToNextGeneration();
+                    RuleEngine = new RuleEngine();
+                    RuleEngine.MoveToNextGeneration(Grid);
                     ++CurrentGeneration;
                     Run();
                 }
