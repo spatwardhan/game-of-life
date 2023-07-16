@@ -13,13 +13,11 @@ namespace GameOfLife.Core.Commands
 
             if (!isValid)
             {
-                //Console.WriteLine("Please enter valid input!");
                 result.Status = Status.INVALID;
                 result.MessageText = "Please enter valid input!";
             }
             else if (isValid && (generations < settings.MinGenerations || generations > settings.MaxGenerations))
             {
-                //Console.WriteLine("Number of generations must be between 3 and 20!");
                 result.Status = Status.OUT_OF_RANGE;
                 result.MessageText = "Number of generations must be between 3 and 20!";
             }
