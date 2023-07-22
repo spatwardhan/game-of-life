@@ -8,23 +8,26 @@ namespace GameOfLife.Tests
 {
     public class RunCommandTests
     {
+        private readonly Settings _settings = new Settings { Grid = new Grid(2,2), Generations = 3};
+        private readonly RunCommand _command = new RunCommand();
+
         [Fact]
         public void ShouldMoveToNextGenerationWhenWithinLimit()
         {
-            var settings = new Settings { Grid = new Grid(5, 5), Generations = 3, CurrentGeneration = 0 };
-            var command = new RunCommand();
-            var result = command.Execute(settings, ">");
+            _settings.CurrentGeneration = 0;
+
+            var result = _command.Execute(_settings, ">");
+            
             Assert.Equal(Status.CONTINUE, result.Status);
             Assert.Null(result.MessageText);
-            Assert.Equal(1, settings.CurrentGeneration);
+            Assert.Equal(1, _settings.CurrentGeneration);
         }
 
         [Fact]
         public void ShouldHandleReturnToMainMenu()
         {
-            var settings = new Settings { Grid = new Grid(2, 2) };
-            var command = new RunCommand();
-            var result = command.Execute(settings, "#");
+            var result = _command.Execute(_settings, "#");
+            
             Assert.Equal(Status.VALID, result.Status);
             Assert.Null(result.MessageText);
         }
@@ -32,9 +35,10 @@ namespace GameOfLife.Tests
         [Fact]
         public void ShouldRejectInvalidInputWhenCurrentGenerationWithinLimit()
         {
-            var settings = new Settings { Grid = new Grid(2, 2), Generations = 3, CurrentGeneration = 2 };
-            var command = new RunCommand();
-            var result = command.Execute(settings, "something");
+            _settings.CurrentGeneration = 2;
+            
+            var result = _command.Execute(_settings, "something");
+            
             Assert.Equal(Status.INVALID, result.Status);
             Assert.Equal("Invalid input entered!", result.MessageText);
         }
@@ -42,9 +46,10 @@ namespace GameOfLife.Tests
         [Fact]
         public void ShouldAcceptAnyInputWhenGenerationLimitReached()
         {
-            var settings = new Settings { Grid = new Grid(2, 2), Generations = 3, CurrentGeneration = 3 };
-            var command = new RunCommand();
-            var result = command.Execute(settings, "something");
+            _settings.CurrentGeneration = 3;
+            
+            var result = _command.Execute(_settings, "something");
+            
             Assert.Equal(Status.VALID, result.Status);
             Assert.Null(result.MessageText);
         }
