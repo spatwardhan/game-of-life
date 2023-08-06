@@ -6,6 +6,6 @@ namespace GameOfLife.Core.Strategies
 {
     public interface ICellUpdateStrategy
     {
-        bool UpdateCellState(bool currentState);
+        bool UpdateCellState(int liveNeighbourCount);
     }
 }
