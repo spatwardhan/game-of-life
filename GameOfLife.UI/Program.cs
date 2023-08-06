@@ -16,43 +16,45 @@ namespace GameOfLife.UI
             {
                 Grid = new Grid(25, 25), //initialise with largest acceptable dimensions
                 LiveCells = new List<Cell>()
-            }; 
+            };
             ProcessChoice();
         }
 
         private static void ProcessChoice()
         {
-            Console.WriteLine(MainPrompt);
-            var choice = Console.ReadLine();
-            var command = CommandFactory.GetCommand(choice);
-            if (command == null)
+            bool isCommandKnown = true;
+            do
             {
-                Console.WriteLine("Invalid option selected, program will exit!");
-                return;
-            }
-            else
-            {
-                ProcessChoice(command);
-            }
+                Console.WriteLine(MainPrompt);
+                var choice = Console.ReadLine();
+                var command = CommandFactory.GetCommand(choice);
+
+                if (command != null)
+                    ProcessChoice(command);
+                else
+                    isCommandKnown = false;
+
+            } while (isCommandKnown);
+
+            Console.WriteLine("Invalid option selected, program will exit!");
+            return;
         }
 
         private static void ProcessChoice(ICommand command)
         {
-            while (true)
+            var result = new Result();
+
+            do
             {
                 command.ExecutePre(_settings);
                 var commandText = Console.ReadLine();
 
-                var result = command.Execute(_settings, commandText);
+                result = command.Execute(_settings, commandText);
                 if (!string.IsNullOrEmpty(result.MessageText))
                     Console.WriteLine(result.MessageText);
-                if (result.Status == Status.VALID)
-                    break;
-            }
+            } while (result.Status != Status.VALID);
 
             command.ExecutePost(_settings);
-
-            ProcessChoice();
         }
     }
 }
