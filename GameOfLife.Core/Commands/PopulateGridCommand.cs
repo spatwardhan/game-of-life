@@ -29,7 +29,7 @@ namespace GameOfLife.Core.Commands
                     var x = int.Parse(match.Groups[1].Value);
                     var y = int.Parse(match.Groups[2].Value);
 
-                    if (x < 0 || x >= settings.Grid.Height || y < 0 || y >= settings.Grid.Width)
+                    if (x < 0 || x >= settings.Grid.Width || y < 0 || y >= settings.Grid.Height)
                     {
                         result.Status = Status.OUT_OF_RANGE;
                         result.MessageText = "Position must be within the grid dimensions!";
