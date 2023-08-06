@@ -35,11 +35,11 @@ namespace GameOfLife.Core
 
         public static void ShowGrid(Grid grid)
         {
-            for (int i = 0; i < grid.Height; i++)
+            for (int i = 0; i < grid.Height; i++) 
             {
                 for (int j = 0; j < grid.Width; j++)
                 {
-                    var cell = new Cell(i, j);
+                    var cell = new Cell(j, i);
                     Console.Write(grid.Cells[cell] ? "o " : ". ");
                 }
                 Console.WriteLine();
