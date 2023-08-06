@@ -17,6 +17,7 @@ namespace GameOfLife.Core.Commands
             if (commandText == "~")
             {
                 GridOperations.ResetGrid(settings.Grid);
+                settings.LiveCells.Clear();
                 result.Status = Status.CONTINUE;
                 result.MessageText = "Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:";
             }

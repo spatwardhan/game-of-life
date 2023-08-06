@@ -55,8 +55,8 @@ namespace GameOfLife.Tests
         public void ShouldHandleReset()
         {
             _settings.Grid = new Grid(2, 2);
-            var liveCell = new Cell(1, 0);
-            _settings.Grid.Cells[liveCell] = true;
+            _settings.LiveCells = new List<Cell> { new Cell(1, 0) };
+            GridOperations.UpdateGrid(_settings.Grid, _settings.LiveCells);
 
             var result = _command.Execute(_settings, "~");
 
@@ -64,6 +64,7 @@ namespace GameOfLife.Tests
             Assert.Equal("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:", result.MessageText);
             var liveCells = _settings.Grid.Cells.Where(cell => cell.Value);
             Assert.Empty(liveCells);
+            Assert.Empty(_settings.LiveCells);
         }
 
         [Fact]
@@ -72,7 +73,7 @@ namespace GameOfLife.Tests
             _settings.Grid = new Grid(2, 2);
 
             var result = _command.Execute(_settings, "#");
-            
+
             Assert.Equal(Status.VALID, result.Status);
             Assert.Null(result.MessageText);
         }
