@@ -8,6 +8,7 @@ namespace GameOfLife.Core.Commands
 {
     public class PopulateGridCommand : ICommand
     {
+        private const string Prompt = "Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:";
         static readonly Regex DimensionsFormat = new Regex(@"(\d{1,2})\s(\d{1,2})");
 
         public Result Execute(Settings settings, string commandText)
@@ -19,7 +20,6 @@ namespace GameOfLife.Core.Commands
                 GridOperations.ResetGrid(settings.Grid);
                 settings.LiveCells.Clear();
                 result.Status = Status.CONTINUE;
-                result.MessageText = "Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:";
             }
             else if (DimensionsFormat.IsMatch(commandText))
             {
@@ -50,10 +50,10 @@ namespace GameOfLife.Core.Commands
             {
                 result.Status = Status.VALID;
             }
+            //If invalid, preExecute will be called in next iteration of loop, so no need to set same message text here
             else
             {
                 result.Status = Status.INVALID;
-                result.MessageText = "Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:";
             }
 
             return result;
@@ -66,7 +66,7 @@ namespace GameOfLife.Core.Commands
 
         public void ExecutePre(Settings settings)
         {
-            Console.WriteLine("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:");
+            Console.WriteLine(Prompt);
         }
     }
 }

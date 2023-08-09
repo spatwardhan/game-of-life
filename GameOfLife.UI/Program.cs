@@ -10,7 +10,7 @@ namespace GameOfLife.UI
         static readonly string MainPrompt = $"Welcome to Conway's Game of Life{Environment.NewLine}[1] Specify grid size{Environment.NewLine}[2] Specify number of generation{Environment.NewLine}[3] Specify initial live cells{Environment.NewLine}[4] Run{Environment.NewLine}Please enter your selection";
         static Settings _settings;
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             _settings = new Settings
             {
@@ -42,7 +42,7 @@ namespace GameOfLife.UI
 
         private static void ProcessChoice(ICommand command)
         {
-            var result = new Result();
+            Result result;
 
             do
             {

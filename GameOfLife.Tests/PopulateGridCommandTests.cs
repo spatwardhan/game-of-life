@@ -47,7 +47,7 @@ namespace GameOfLife.Tests
             var result = _command.Execute(_settings, "not a number");
 
             Assert.Equal(Status.INVALID, result.Status);
-            Assert.Equal("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:", result.MessageText);
+            Assert.Null(result.MessageText);
             Assert.Empty(_settings.LiveCells);
         }
 
@@ -61,7 +61,7 @@ namespace GameOfLife.Tests
             var result = _command.Execute(_settings, "~");
 
             Assert.Equal(Status.CONTINUE, result.Status);
-            Assert.Equal("Please enter live cell coordinate in x y format, ~ to clear all the previously entered cells or # to go back to main menu:", result.MessageText);
+            Assert.Null(result.MessageText);
             var liveCells = _settings.Grid.Cells.Where(cell => cell.Value);
             Assert.Empty(liveCells);
             Assert.Empty(_settings.LiveCells);
