@@ -19,13 +19,13 @@ namespace GameOfLife.Core
             {
                 for (int j = 0; j < grid.Width; j++)
                 {
-                    var cell = new Cell(i, j);
+                    var cell = (i, j);
                     grid.Cells.Add(cell, false);
                 }
             }
         }
 
-        public static void UpdateGrid(Grid grid, List<Cell> liveCells)
+        public static void UpdateGrid(Grid grid, List<(int,int)> liveCells)
         {
             foreach (var liveCell in liveCells)
             {
@@ -39,7 +39,7 @@ namespace GameOfLife.Core
             {
                 for (int j = 0; j < grid.Width; j++)
                 {
-                    var cell = new Cell(j, i);
+                    var cell = (j, i);
                     Console.Write(grid.Cells[cell] ? "o " : ". ");
                 }
                 Console.WriteLine();

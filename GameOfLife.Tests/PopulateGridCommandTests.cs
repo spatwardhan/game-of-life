@@ -15,21 +15,21 @@ namespace GameOfLife.Tests
         public void ShouldSetLiveCellForValidInput()
         {
             _settings.Grid = new Grid(5, 5);
-            _settings.LiveCells = new List<Cell>();
+            _settings.LiveCells = new List<(int,int)>();
 
             var result = _command.Execute(_settings, "2 3");
 
             Assert.Equal(Status.CONTINUE, result.Status);
             Assert.Null(result.MessageText);
             Assert.Single(_settings.LiveCells);
-            Assert.Equal(new Cell(2, 3), _settings.LiveCells[0]);
+            Assert.Equal((2, 3), _settings.LiveCells[0]);
         }
 
         [Fact]
         public void ShouldRejectOutOfRangeInput()
         {
             _settings.Grid = new Grid(2, 2);
-            _settings.LiveCells = new List<Cell>();
+            _settings.LiveCells = new List<(int, int)>();
 
             var result = _command.Execute(_settings, "2 3");
 
@@ -42,7 +42,7 @@ namespace GameOfLife.Tests
         public void ShouldRejectInvalidInput()
         {
             _settings.Grid = new Grid(2, 2);
-            _settings.LiveCells = new List<Cell>();
+            _settings.LiveCells = new List<(int,int)>();
 
             var result = _command.Execute(_settings, "not a number");
 
@@ -55,7 +55,7 @@ namespace GameOfLife.Tests
         public void ShouldHandleReset()
         {
             _settings.Grid = new Grid(2, 2);
-            _settings.LiveCells = new List<Cell> { new Cell(1, 0) };
+            _settings.LiveCells = new List<(int,int)> { (1, 0) };
             GridOperations.UpdateGrid(_settings.Grid, _settings.LiveCells);
 
             var result = _command.Execute(_settings, "~");
