@@ -36,7 +36,7 @@ namespace GameOfLife.Core.Commands
                     }
                     else
                     {
-                        settings.LiveCells.Add(new Cell(x, y));
+                        settings.LiveCells.Add((x, y));
                         result.Status = Status.CONTINUE;
                     }
                 }

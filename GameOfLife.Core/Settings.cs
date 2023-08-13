@@ -8,7 +8,7 @@ namespace GameOfLife.Core
     {
         public Grid Grid { get; set; }
         public int Generations { get; set; }
-        public List<Cell> LiveCells { get; set; }
+        public List<(int,int)> LiveCells { get; set; }
 
         public int CurrentGeneration { get; set; }
 

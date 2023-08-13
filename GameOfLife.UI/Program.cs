@@ -15,7 +15,7 @@ namespace GameOfLife.UI
             _settings = new Settings
             {
                 Grid = new Grid(25, 25), //initialise with largest acceptable dimensions
-                LiveCells = new List<Cell>()
+                LiveCells = new List<(int,int)>()
             };
             ProcessChoice();
         }

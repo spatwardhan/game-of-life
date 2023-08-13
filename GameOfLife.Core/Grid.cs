@@ -9,7 +9,7 @@ namespace GameOfLife.Core
     {
         public int Width { get; set; }
         public int Height { get; set; }
-        public Dictionary<Cell, bool> Cells { get; set; } = new Dictionary<Cell, bool>();
+        public Dictionary<(int, int), bool> Cells { get; set; } = new Dictionary<(int, int), bool>();
 
 
         public Grid(int width, int height)
